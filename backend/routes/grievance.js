@@ -4,41 +4,19 @@ const auth = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// ➕ CREATE
+// CREATE
 router.post("/grievances", auth, async (req, res) => {
-  try {
-    const grievance = await Grievance.create({
-      ...req.body,
-      user: req.user
-    });
-
-    res.json(grievance);
-  } catch {
-    res.status(500).json({ msg: "Error creating grievance" });
-  }
+  const g = await Grievance.create({ ...req.body, user: req.user });
+  res.json(g);
 });
 
-// 📥 GET ALL
+// GET ALL
 router.get("/grievances", auth, async (req, res) => {
-  try {
-    const data = await Grievance.find({ user: req.user });
-    res.json(data);
-  } catch {
-    res.status(500).json({ msg: "Error fetching data" });
-  }
+  const data = await Grievance.find({ user: req.user });
+  res.json(data);
 });
 
-// 🔍 GET BY ID
-router.get("/grievances/:id", auth, async (req, res) => {
-  try {
-    const data = await Grievance.findById(req.params.id);
-    res.json(data);
-  } catch {
-    res.status(500).json({ msg: "Error fetching item" });
-  }
-});
-
-// ✏️ UPDATE
+// 🔥 ADD THIS (UPDATE)
 router.put("/grievances/:id", auth, async (req, res) => {
   try {
     const updated = await Grievance.findByIdAndUpdate(
@@ -52,30 +30,20 @@ router.put("/grievances/:id", auth, async (req, res) => {
   }
 });
 
-// ❌ DELETE
+// DELETE
 router.delete("/grievances/:id", auth, async (req, res) => {
-  try {
-    await Grievance.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Deleted successfully" });
-  } catch {
-    res.status(500).json({ msg: "Delete failed" });
-  }
+  await Grievance.findByIdAndDelete(req.params.id);
+  res.json({ msg: "Deleted" });
 });
 
-// 🔎 SEARCH
+// SEARCH
 router.get("/grievances/search", auth, async (req, res) => {
-  try {
-    const { title } = req.query;
-
-    const data = await Grievance.find({
-      user: req.user,
-      title: { $regex: title, $options: "i" }
-    });
-
-    res.json(data);
-  } catch {
-    res.status(500).json({ msg: "Search failed" });
-  }
+  const { title } = req.query;
+  const data = await Grievance.find({
+    user: req.user,
+    title: { $regex: title, $options: "i" }
+  });
+  res.json(data);
 });
 
 module.exports = router;

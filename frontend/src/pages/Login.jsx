@@ -1,25 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import API from "../api";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
   const submit = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:10000/api/login",
-        form
-      );
-
+      const res = await axios.post(`${API}/login`, form);
       localStorage.setItem("token", res.data.token);
-
-      // ✅ FIXED redirect
-      navigate("/dashboard");
-
+      nav("/dashboard");
     } catch (err) {
-      alert(err.response?.data?.msg || "Invalid credentials");
+      alert(err.response?.data?.msg || "Login failed");
     }
   };
 
@@ -29,21 +23,21 @@ export default function Login() {
 
       <input
         placeholder="Email"
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
+        onChange={e => setForm({ ...form, email: e.target.value })}
       />
 
       <input
         type="password"
         placeholder="Password"
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
+        onChange={e => setForm({ ...form, password: e.target.value })}
       />
 
-      <button className="btn-primary" onClick={submit}>
-        Login
-      </button>
+      <button onClick={submit}>Login</button>
 
-      <p style={{ textAlign: "center", marginTop: "10px" }}>
-        New user? <a href="/register">Register</a>
+      {/* 👇 ADD THIS */}
+      <p style={{ marginTop: "10px", textAlign: "center" }}>
+        Don’t have an account?{" "}
+        <Link to="/register">Register</Link>
       </p>
     </div>
   );

@@ -14,7 +14,9 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
 
 // ✅ Root route (important for Render)
 app.get("/", (req, res) => {
