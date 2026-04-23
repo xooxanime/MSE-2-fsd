@@ -16,6 +16,11 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+// ✅ Root route (important for Render)
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
 // Routes
 app.use("/api", authRoutes);
 app.use("/api", grievanceRoutes);
